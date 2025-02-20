@@ -10,6 +10,29 @@
 
 </div>
 
+## 📸 Dashboard Preview
+
+<div align="center">
+  <img src="images/blinkit.png" alt="Blinkit Analysis Dashboard" width="100%">
+</div>
+
+### Interactive Visualizations
+
+<div align="center">
+  <img src="images/Sales.png" alt="Sales Analysis" width="45%">
+  <img src="images/customer-insights.png" alt="Customer Insights" width="45%">
+</div>
+
+<div align="center">
+  <img src="images/ Delivery.png" alt="Delivery Performance" width="45%">
+  <img src="images/Inventory.png" alt="Inventory Analysis" width="45%">
+</div>
+
+<div align="center">
+  <img src="images/Marketing.png" alt="Marketing Campaigns" width="45%">
+  <img src="images/Customer Sentiment.png" alt="Customer Sentiment" width="45%">
+</div>
+
 ---
 
 ## 🎯 Project Overview
