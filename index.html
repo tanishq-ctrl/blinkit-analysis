@@ -4,12 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Blinkit Data Storytelling Analysis</title>
+  
   <!-- Google Fonts -->
   <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet">
   <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <!-- AOS (Animate On Scroll) CSS -->
   <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+  
   <style>
     :root {
       --primary-color: #FF6F00;
@@ -32,13 +34,16 @@
       color: #333;
       line-height: 1.6;
     }
-    /* Hero Section */
+    /* Ensure pre elements use the same font */
+    pre {
+      font-family: inherit;
+    }
+    /* HERO SECTION */
     .hero {
       position: relative;
-      height: 60vh;
+      height: 100vh; /* Full viewport height */
       overflow: hidden;
     }
-    /* Video Container for the YouTube iframe */
     .video-container {
       position: absolute;
       top: 0;
@@ -56,8 +61,9 @@
       height: 100vh;
       transform: translate(-50%, -50%);
       object-fit: cover;
-      pointer-events: none;
+      pointer-events: none;  /* This prevents interaction with the video */
     }
+    /* Gradient overlay for depth */
     .hero::after {
       content: "";
       position: absolute;
@@ -65,7 +71,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: var(--overlay-color);
+      background: linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 60%, rgba(0,0,0,0) 100%);
       z-index: 1;
     }
     .hero-content {
@@ -73,21 +79,55 @@
       z-index: 2;
       text-align: center;
       color: #fff;
-      animation: fadeIn 2s ease-in-out;
-      /* Make the content container fill the hero so it's centered nicely */
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100%;
+      animation: scaleIn 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
     }
     .hero-content h1 {
-      font-size: 3rem;
-      margin-bottom: 10px;
+      font-size: 3.5rem;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.6);
     }
     .hero-content p {
-      font-size: 1.2rem;
+      font-size: 1.4rem;
+      margin-bottom: 30px;
+      letter-spacing: 0.5px;
     }
+    /* CTA Button */
+    .cta-button {
+      padding: 15px 30px;
+      font-size: 1rem;
+      color: #fff;
+      background-color: var(--accent-color);
+      border: none;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    .cta-button:hover {
+      background-color: var(--primary-color);
+    }
+    /* Bouncing Scroll Arrow */
+    .scroll-down {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 2rem;
+      color: #fff;
+      cursor: pointer;
+      z-index: 3;
+      animation: float 2s ease-in-out infinite;
+    }
+    @keyframes float {
+      0% { transform: translate(-50%, 0); }
+      50% { transform: translate(-50%, -15px); }
+      100% { transform: translate(-50%, 0); }
+    }
+    /* STICKY NAVIGATION */
     nav {
       position: sticky;
       top: 0;
@@ -102,11 +142,23 @@
       margin: 0 15px;
       text-decoration: none;
       font-weight: 600;
+      position: relative;
       transition: color 0.3s ease;
     }
-    nav a:hover {
-      color: #fff3e0;
+    nav a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      bottom: -5px;
+      left: 0;
+      background-color: #fff;
+      transition: width 0.3s ease;
     }
+    nav a:hover::after {
+      width: 100%;
+    }
+    /* MAIN CONTENT CONTAINER */
     .container {
       width: 90%;
       max-width: 1200px;
@@ -120,10 +172,16 @@
       margin-bottom: 60px;
       padding-bottom: 20px;
       border-bottom: 1px solid #eee;
-      animation: fadeIn 1s ease-in-out;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.6s ease-out, transform 0.6s ease-out;
     }
     section:last-of-type {
       border-bottom: none;
+    }
+    section.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
     h2 {
       margin: 20px 0;
@@ -153,86 +211,430 @@
       border-left: 6px solid var(--primary-color);
       margin-bottom: 20px;
       border-radius: 4px;
-      transition: transform 0.3s ease;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                  box-shadow 0.3s ease;
     }
     .insights:hover {
-      transform: translateX(5px);
+      transform: translateX(10px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
     }
     .card {
       background: #fff;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), 
+                  box-shadow 0.3s ease;
       padding: 20px;
       margin-bottom: 20px;
     }
     .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+      transform: translateY(-10px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.15);
     }
-    #threejs-container {
+    /* Add these styles to your existing CSS */
+    .insights table {
       width: 100%;
-      height: 400px;
-      background: #000;
-      margin-bottom: 40px;
+        border-collapse: collapse;
+        margin: 20px 0;
+        background: #fff;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .insights th {
+        background-color: var(--primary-color);
+        color: #fff;
+        padding: 12px;
+        text-align: left;
+        font-weight: 600;
+    }
+
+    .insights td {
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .insights tr:last-child td {
+        border-bottom: none;
+    }
+
+    .insights tr {
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .insights tr:hover {
+        background-color: #fff3e0;
+        transform: scale(1.01);
+    }
+
+    .table-section {
+        margin: 25px 0;
+    }
+
+    .table-section h4 {
+        color: var(--primary-color);
+        margin-bottom: 15px;
+        font-size: 1.1rem;
+    }
+
+    .table-container {
       border-radius: 8px;
       overflow: hidden;
+        margin: 15px 0;
     }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
+
+    /* Add these new minimalistic animations to your existing CSS */
+
+    /* Subtle fade in for sections */
+    @keyframes subtleFadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Gentle pulse animation */
+    @keyframes gentlePulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.02); }
+        100% { transform: scale(1); }
+    }
+
+    /* Smooth underline animation */
+    @keyframes smoothUnderline {
+        from { width: 0; }
+        to { width: 100%; }
+    }
+
+    /* Soft glow animation */
+    @keyframes softGlow {
+        0% { box-shadow: 0 0 5px rgba(255, 111, 0, 0); }
+        50% { box-shadow: 0 0 15px rgba(255, 111, 0, 0.2); }
+        100% { box-shadow: 0 0 5px rgba(255, 111, 0, 0); }
+    }
+
+    /* Apply animations to elements */
+    .hero-content h1 {
+        animation: subtleFadeIn 1s ease-out;
+    }
+
+    .hero-content p {
+        animation: subtleFadeIn 1s ease-out 0.3s forwards;
+        opacity: 0;
+    }
+
+    .cta-button {
+        animation: subtleFadeIn 1s ease-out 0.6s forwards;
+        opacity: 0;
+    }
+
+    .cta-button:hover {
+        animation: gentlePulse 1s ease-in-out infinite;
+    }
+
+    nav a::after {
+        animation: none;
+        transition: width 0.3s ease;
+    }
+
+    nav a:hover::after {
+        animation: smoothUnderline 0.3s ease-out forwards;
+    }
+
+    .insights {
+        transition: all 0.3s ease;
+    }
+
+    .insights:hover {
+        animation: softGlow 2s infinite;
+    }
+
+    .visualization {
+        transition: transform 0.3s ease;
+    }
+
+    .visualization:hover {
+        transform: translateY(-5px);
+    }
+
+    /* Smooth scroll behavior for the entire page */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Enhanced table animations */
+    .insights tr {
+        transition: all 0.2s ease;
+    }
+
+    .insights tr:hover {
+        transform: translateX(5px);
+        background-color: rgba(255, 111, 0, 0.05);
+    }
+
+    /* Icon animations */
+    .fa-solid {
+        transition: transform 0.3s ease;
+    }
+
+    h2:hover .fa-solid,
+    h3:hover .fa-solid {
+        transform: rotate(5deg);
+    }
+
+    /* Card hover effect */
+    .card {
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Update AOS animations to be more subtle */
+    [data-aos="fade-up"],
+    [data-aos="fade-in"],
+    [data-aos="fade-down"] {
+        /* Remove these */
+    }
+
+    /* Smooth transition for all interactive elements */
+    a, button, .card, .insights, .visualization {
+        transition: all 0.3s ease;
+    }
+
+    /* Enhanced Card Styling */
+    .insights {
+      background: linear-gradient(to right bottom, #fff, #fff8f0);
+      border-radius: 15px;
+      padding: 25px;
+      margin: 30px 0;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      border-left: 6px solid var(--primary-color);
+      transition: all 0.3s ease;
+    }
+
+    .insights:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Enhanced Typography */
+    .insights h3 {
+      color: var(--primary-color);
+      font-size: 1.8rem;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid #FFE0B2;
+    }
+
+    .insights h4 {
+      color: #E65100;
+      font-size: 1.4rem;
+      margin: 25px 0 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .insights h4::before {
+      content: '';
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      margin-right: 12px;
+    }
+
+    /* List Styling */
+    .insights ul {
+      padding-left: 20px;
+      margin: 15px 0;
+      list-style: none; /* Remove default bullets */
+    }
+
+    .insights ul li {
+      margin: 10px 0;
+      line-height: 1.6;
+      position: relative;
+      padding-left: 20px;
+    }
+
+    .insights ul li::before {
+      content: '→';
+      position: absolute;
+      left: -5px;
+      color: var(--accent-color);
+    }
+
+    /* For nested lists, remove the arrow from inner list items */
+    .insights ul ul li::before {
+      content: '•';
+      color: var(--primary-color);
+      left: -15px;
+    }
+
+    /* For third level lists */
+    .insights ul ul ul li::before {
+      content: '-';
+      left: -12px;
+    }
+
+    /* Remove default padding for nested lists */
+    .insights ul ul {
+      padding-left: 15px;
+      margin: 5px 0;
+    }
+
+    .insights ul ul ul {
+      padding-left: 12px;
+    }
+
+    /* Metrics Highlighting */
+    .insights strong {
+      color: var(--primary-color);
+      font-weight: 600;
+      padding: 2px 5px;
+      border-radius: 4px;
+      background: rgba(255, 111, 0, 0.1);
+    }
+
+    /* Section Dividers */
+    .insights > ul > li {
+      padding-bottom: 15px;
+      margin-bottom: 15px;
+      border-bottom: 1px dashed #FFE0B2;
+    }
+
+    .insights > ul > li:last-child {
+      border-bottom: none;
+    }
+
+    /* Visualization Container */
+    .visualization {
+      background: white;
+      border-radius: 15px;
+      padding: 20px;
+      margin: 30px 0;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+    }
+
+    .visualization:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    }
+
+    /* Star Rating Styling */
+    .insights .star-rating {
+      color: #FFB300;
+      font-size: 1.1em;
+    }
+
+    /* Metrics Grid */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 25px 0;
+    }
+
+    .metric-card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      text-align: center;
+    }
+
+    .metric-card .value {
+      font-size: 1.8rem;
+      color: var(--primary-color);
+      font-weight: bold;
+      margin: 10px 0;
+    }
+
+    .metric-card .label {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .insights {
+        padding: 20px;
+      }
+
+      .insights h3 {
+        font-size: 1.5rem;
+      }
+
+      .insights h4 {
+        font-size: 1.2rem;
+      }
+
+      .metrics-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
-  <!-- Hero Section with YouTube Video Background -->
-  <section class="hero" data-aos="fade-in">
+  <!-- HERO SECTION WITH FULLSCREEN YOUTUBE VIDEO -->
+  <section class="hero">
     <div class="video-container">
-      <!-- Replace with your desired YouTube video URL and parameters -->
-      <iframe
-        src="https://www.youtube.com/embed/FmllsQZyXj4?autoplay=1&mute=1&loop=1&playlist=FmllsQZyXj4"
-        frameborder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen
-        playsinline
-        muted
-        title="Background Video">
+      <iframe src="https://www.youtube.com/embed/FmllsQZyXj4?autoplay=1&mute=1&loop=1&playlist=FmllsQZyXj4&controls=0&modestbranding=1&showinfo=0"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              playsinline
+              muted
+              title="Background Video">
       </iframe>
     </div>
     <div class="hero-content">
       <h1><i class="fa-solid fa-bolt"></i> Blinkit Analysis</h1>
-      <p>Data Insights from March 2023 to November 2024</p>
+      <p>Data Insights from <strong>March 2023</strong> to <strong>November 2024</strong></p>
+      <button class="cta-button" onclick="document.getElementById('intro').scrollIntoView({behavior: 'smooth'})">
+        Explore Analysis
+      </button>
+    </div>
+    <div class="scroll-down" onclick="document.getElementById('intro').scrollIntoView({behavior: 'smooth'})">
+      <i class="fa-solid fa-angle-down"></i>
     </div>
   </section>
   
-  <!-- Sticky Navigation -->
+  <!-- STICKY NAVIGATION -->
   <nav>
     <a href="#intro"><i class="fa-solid fa-info-circle"></i> Introduction</a>
     <a href="#sales"><i class="fa-solid fa-credit-card"></i> Sales &amp; Payments</a>
     <a href="#customer"><i class="fa-solid fa-user-group"></i> Customer Insights</a>
     <a href="#operations"><i class="fa-solid fa-truck"></i> Delivery &amp; Operations</a>
     <a href="#inventory"><i class="fa-solid fa-boxes-stacked"></i> Inventory &amp; Products</a>
-    <a href="#marketing"><i class="fa-solid fa-chart-line"></i> Campaigns &amp; Feedback</a>
-    <a href="#strategy"><i class="fa-solid fa-lightbulb"></i> Strategic Recommendations</a>
+    <a href="#marketing"><i class="fa-solid fa-chart-line"></i> Campaigns </a>
+    <a href="#sentiment"><i class="fa-solid fa-face-smile"></i> Customer Sentiment</a>
   </nav>
   
-  <!-- Three.js Animation Container -->
-  <div id="threejs-container"></div>
-  
+  <!-- MAIN CONTENT CONTAINER (ANALYSIS SECTIONS) -->
   <div class="container">
-    <!-- Introduction Section -->
-    <section id="intro" data-aos="fade-up">
+    <!-- INTRODUCTION SECTION -->
+    <section id="intro" class="section">
       <h2><i class="fa-solid fa-info"></i> Introduction</h2>
       <p>
-        Welcome to our comprehensive Blinkit analysis. Using data from <strong>March 2023 to November 2024</strong>, we have developed interactive Tableau visualizations that capture key trends—from sales and payment methods to customer behavior, delivery efficiency, inventory management, and marketing performance. Each section presents a visualization followed by detailed observations, insights, and actionable recommendations.
+        Welcome to our comprehensive Blinkit analysis. Using data from <strong>March 2023</strong> to <strong>November 2024</strong>, we have developed interactive Tableau visualizations that capture key trends—from sales and payment methods to customer behavior, delivery efficiency, inventory management, and marketing performance. Each section presents a visualization followed by detailed observations, insights, and actionable recommendations.
       </p>
     </section>
     
-    <!-- Sales & Payment Analysis -->
-    <section id="sales" data-aos="fade-up">
+    <!-- SALES & PAYMENT ANALYSIS -->
+    <section id="sales" class="section">
       <h2><i class="fa-solid fa-credit-card"></i> Sales &amp; Payment Analysis</h2>
       <!-- Visualization: Overall Sales Trend -->
-      <div class="visualization" data-aos="zoom-in">
+      <div class="visualization">
         <div class="tableauPlaceholder" id="viz1739997212943" style="position: relative">
           <noscript>
             <a href="#">
@@ -273,31 +675,91 @@
           vizElement.parentNode.insertBefore(scriptElement, vizElement);
         </script>
       </div>
-      <!-- Insights: Overall Sales Trend -->
-      <div class="insights" data-aos="fade-right">
-        <h3>Overall Sales Trend Over Time (2023 &amp; 2024)</h3>
+      <!-- Updated Insights: Sales & Payment Performance -->
+      <div class="insights">
+        <h3><i class="fa-solid fa-chart-line"></i> Money Talks: Decoding Blinkit's Financial Pulse & Payment Patterns</h3>
+        <h4>1. Payment Method Performance (<strong>2023</strong> vs <strong>2024</strong>)</h4>
         <ul>
-          <li><strong>Observations:</strong> Monthly data reveals that Card transactions peaked in mid-2023 (~193K) before declining in 2024 (~175K). Cash transactions surged in April 2023 (~165K) before dropping sharply (~24K in November). UPI and Wallet methods initially peaked (UPI ~183K; Wallet ~160K) with modest declines thereafter.</li>
-          <li><strong>Insights:</strong> Card payments, while stable, decreased later—hinting at a shift toward digital alternatives. The significant drop in cash usage reinforces the digital payment trend, while UPI and Wallet growth is inconsistent.</li>
-          <li><strong>Recommendations:</strong> Investigate the factors behind the cash decline and enhance promotions for UPI and Wallet. Also, analyze potential causes for the card payment dip, such as transaction fees or competition.</li>
+          <li><strong>Card Transactions:</strong>
+            <ul>
+              <li><strong>2023:</strong> ₹<strong>1,399,377</strong></li>
+              <li><strong>2024:</strong> ₹<strong>1,466,181</strong></li>
+              <li><strong>Growth of 4.77%</strong> indicating increased trust in digital payments.</li>
         </ul>
-      </div>
-      <!-- Insights: Sales by Payment Method -->
-      <div class="insights" data-aos="fade-left">
-        <h3>Sales by Payment Method</h3>
+          </li>
+          <li><strong>Wallet Transactions:</strong>
+            <ul>
+              <li><strong>2023:</strong> ₹<strong>1,378,039</strong></li>
+              <li><strong>2024:</strong> ₹<strong>1,336,965</strong></li>
+              <li><strong>Decline of 2.98%</strong>, suggesting reduced promotional campaigns or fewer wallet users.</li>
+            </ul>
+          </li>
+          <li><strong>Cash Transactions:</strong>
+            <ul>
+              <li><strong>2023:</strong> ₹<strong>1,346,517</strong></li>
+              <li><strong>2024:</strong> ₹<strong>1,423,947</strong></li>
+              <li><strong>Growth of 5.74%</strong>, which implies customers still prefer cash transactions despite digital alternatives.</li>
+            </ul>
+          </li>
+          <li><strong>UPI Transactions:</strong>
+            <ul>
+              <li><strong>2023:</strong> ₹<strong>1,340,825</strong></li>
+              <li><strong>2024:</strong> ₹<strong>1,317,458</strong></li>
+              <li><strong>Decline of 1.75%</strong>, potentially due to competition from other payment methods.</li>
+            </ul>
+          </li>
+        </ul>
+        <h4>2. Monthly Sales Trend Observations</h4>
         <ul>
-          <li><strong>Observations:</strong> Sales rank as follows—Card (~2.86M), Cash (~2.77M), Wallet (~2.71M), UPI (~2.65M).</li>
-          <li><strong>Insights:</strong> Despite the decline in card transactions, they remain dominant due to strong consumer trust. Meanwhile, digital payment methods are gradually gaining ground.</li>
-          <li><strong>Recommendations:</strong> Consider targeted cashback or reward programs for digital payments and streamline the card transaction process.</li>
+          <li><strong>Peak Months:</strong>
+            <ul>
+              <li>Card transactions peaked in May <strong>2023</strong> (₹<strong>193,157</strong>) and July <strong>2024</strong> (₹<strong>175,685</strong>).</li>
+              <li>Cash transactions peaked in May <strong>2024</strong> (₹<strong>182,377</strong>).</li>
+              <li>UPI payments peaked in August <strong>2023</strong> (₹<strong>183,242</strong>).</li>
+              <li>Wallet transactions were at their highest in August <strong>2023</strong> (₹<strong>160,028</strong>).</li>
+            </ul>
+          </li>
+          <li><strong>Declining Trends:</strong>
+            <ul>
+              <li>November <strong>2024</strong> saw the lowest transactions across all methods, particularly for UPI (₹<strong>15,703</strong>).</li>
+              <li>Card transactions dropped drastically in November <strong>2024</strong> (₹<strong>13,026</strong>).</li>
+              <li>Wallet payments also hit a low in November (₹<strong>15,294</strong>).</li>
+            </ul>
+          </li>
+        </ul>
+        <h4>Recommendations for Revenue Growth</h4>
+        <ul>
+          <li><strong>Strengthen Digital Payments (Card &amp; UPI):</strong>
+            <ul>
+              <li>Offer exclusive discounts for UPI and Card transactions to increase adoption.</li>
+              <li>Implement loyalty rewards for repeat digital payment users.</li>
+            </ul>
+          </li>
+          <li><strong>Target Low-Performing Months:</strong>
+            <ul>
+              <li>November sales are significantly lower across all methods.</li>
+              <li>Introduce special promotions or festive discounts to boost transactions.</li>
+            </ul>
+          </li>
+          <li><strong>Leverage Seasonal Peaks:</strong>
+            <ul>
+              <li>Since May and July show peak transactions, invest in marketing and cashback offers during these months to maximize revenue.</li>
+            </ul>
+          </li>
+          <li><strong>Optimize Wallet Usage:</strong>
+            <ul>
+              <li>Since wallet transactions declined by <strong>2.98%</strong>, reintroduce wallet-specific cashback offers to encourage usage.</li>
+            </ul>
+          </li>
         </ul>
       </div>
     </section>
     
-    <!-- Customer Insights & Segmentation -->
-    <section id="customer" data-aos="fade-up">
+    <!-- CUSTOMER INSIGHTS & SEGMENTATION -->
+    <section id="customer" class="section">
       <h2><i class="fa-solid fa-user-group"></i> Customer Insights &amp; Segmentation</h2>
       <!-- Visualization: Customer Insights Dashboard -->
-      <div class="visualization" data-aos="zoom-in">
+      <div class="visualization">
         <div class="tableauPlaceholder" id="viz1739997253590" style="position: relative">
           <noscript>
             <a href="#">
@@ -338,28 +800,57 @@
           vizElement.parentNode.insertBefore(scriptElement, vizElement);
         </script>
       </div>
-      <!-- Insights: Customer Segmentation -->
-      <div class="insights" data-aos="fade-right">
-        <h3>Customer Lifetime Value &amp; Segmentation</h3>
+      <!-- Updated Insights: Customer Insights & Segmentation -->
+      <div class="insights">
+        <h3><i class="fa-solid fa-users"></i> Customer Chronicles: Unveiling User Personas & Purchase Patterns</h3>
+        <h4>1. Customer Segments vs. Total Orders</h4>
         <ul>
-          <li><strong>Observations:</strong> Analysis shows that Premium customers have high orders and value; New customers display a wide spending range with fewer repeat orders; Regular customers offer balanced performance; and Inactive customers show limited engagement.</li>
-          <li><strong>Insights:</strong> Premium customers drive revenue, while New and Inactive segments require targeted engagement strategies.</li>
-          <li><strong>Recommendations:</strong> Retain premium customers with loyalty programs, offer targeted incentives for new users, and re-engage inactive users through personalized campaigns.</li>
+          <li><strong>New Customers:</strong> <strong>6,829</strong> total orders, indicating strong acquisition efforts.</li>
+          <li><strong>Regular Customers:</strong> <strong>6,598</strong> total orders, showing consistent repeat purchases.</li>
+          <li><strong>Premium Customers:</strong> <strong>6,452</strong> total orders, indicating a high-value segment.</li>
+          <li><strong>Inactive Customers:</strong> <strong>6,350</strong> total orders, suggesting a need for re-engagement strategies.</li>
         </ul>
-        <h3>Customer Distribution by Location</h3>
+        <h4>2. Customer Lifetime Value (CLV) Analysis</h4>
         <ul>
-          <li><strong>Observations:</strong> Customers span India, Bangladesh, Nepal, and Sri Lanka. New customers are concentrated in metropolitan areas; Premium customers in select urban centers; and Regular customers are widely distributed with a higher density in tier‑2 cities.</li>
-          <li><strong>Insights:</strong> Urban regions are key for digital adoption, while the widespread distribution of inactive users suggests the need for localized strategies.</li>
-          <li><strong>Recommendations:</strong> Implement location-based promotions and tailor campaigns according to regional dynamics.</li>
+          <li><strong>New Customers:</strong> Avg Order Value ranges from ₹<strong>202</strong> to ₹<strong>2000</strong>, showing a wide disparity.</li>
+          <li><strong>Regular Customers:</strong> Avg Order Value ranges from ₹<strong>203</strong> to ₹<strong>1995</strong>, indicating steady spending habits.</li>
+          <li><strong>Premium Customers:</strong> Avg Order Value ranges from ₹<strong>260</strong> to ₹<strong>2000</strong>, highlighting their high purchase potential.</li>
+          <li><strong>Inactive Customers:</strong> Avg Order Value ranges from ₹<strong>205</strong> to ₹<strong>1995</strong>, suggesting potential to be re-engaged with targeted promotions.</li>
+        </ul>
+        <h4>3. Customer Distribution by Location</h4>
+        <ul>
+          <li>Highest concentration in major metro cities like <strong>Delhi NCR, Bengaluru, Mumbai, Chennai, and Hyderabad</strong></li>
+          <li>Meanwhile, cities like <strong>Pune, Ahmedabad, Lucknow, and Coimbatore</strong> show decent presence but clear room for growth. Targeted local marketing and improved logistics in these second-wave Tier 1 and Tier 2 hubs could significantly boost adoption.</li>
+        </ul>
+        <h4>Recommendations for Growth</h4>
+        <ul>
+          <li><strong>Boost Customer Retention &amp; Engagement:</strong>
+            <ul>
+              <li>Launch win-back campaigns with special incentives for Inactive Customers.</li>
+              <li>Offer exclusive perks and rewards for Premium Customers.</li>
+            </ul>
+          </li>
+          <li><strong>Target High-Value Segments:</strong>
+            <ul>
+              <li>Implement subscription models or discounts for Regular Customers.</li>
+              <li>Provide a seamless onboarding experience and personalized offers for New Customers.</li>
+            </ul>
+          </li>
+          <li><strong>Expand Customer Base in Underrepresented Areas:</strong>
+            <ul>
+              <li>Increase targeted advertising in smaller cities like Adoni and Agartala.</li>
+              <li>Explore localized partnerships with regional sellers and logistic providers.</li>
+            </ul>
+          </li>
         </ul>
       </div>
     </section>
     
-    <!-- Delivery & Operational Performance -->
-    <section id="operations" data-aos="fade-up">
+    <!-- DELIVERY & OPERATIONAL PERFORMANCE -->
+    <section id="operations" class="section">
       <h2><i class="fa-solid fa-truck"></i> Delivery &amp; Operational Performance</h2>
       <!-- Visualization: Delivery Efficiency Dashboard -->
-      <div class="visualization" data-aos="zoom-in">
+      <div class="visualization">
         <div class="tableauPlaceholder" id="viz1739997278443" style="position: relative">
           <noscript>
             <a href="#">
@@ -400,22 +891,72 @@
           vizElement.parentNode.insertBefore(scriptElement, vizElement);
         </script>
       </div>
-      <!-- Insights: Delivery & Operations -->
-      <div class="insights" data-aos="fade-left">
-        <h3>Delivery Time Deviations &amp; Average Delivery Times</h3>
+      <!-- Updated Insights: Delivery & Operational Efficiency -->
+      <div class="insights">
+        <h3><i class="fa-solid fa-truck-fast"></i> Speed Metrics: The Pulse of Blinkit's Delivery Excellence</h3>
+        <h4>1. Delivery Time Deviations</h4>
         <ul>
-          <li><strong>Observations:</strong> Although most orders are delivered on time, many experience minor delays (5–10 minutes) and a few see significant delays (15+ minutes). Average delivery times range from 3.9 to 5.3 minutes, with a slight increase toward the end of the period.</li>
-          <li><strong>Insights:</strong> High order volumes during peak periods can strain logistics, where even minor delays affect customer satisfaction.</li>
-          <li><strong>Recommendations:</strong> Identify operational bottlenecks, optimize delivery routes, and consider AI-based predictive analytics to manage peak demand.</li>
+          <li><strong>On-Time Deliveries:</strong> <strong>1,577</strong> orders met the expected delivery time.</li>
+          <li><strong>Slightly Delayed Deliveries:</strong> <strong>529</strong> orders had a minor delay (5–10 mins).</li>
+          <li><strong>Significantly Delayed Deliveries:</strong> <strong>136</strong> orders experienced a delay of more than 15 minutes.</li>
+        </ul>
+        <h4>2. Average Delivery Time Over the Months</h4>
+        <ul>
+          <li><strong>Fastest Delivery Month:</strong> June (<strong>3.92</strong> minutes).</li>
+          <li><strong>Slowest Delivery Month:</strong> November (<strong>5.40</strong> minutes).</li>
+          <li><strong>Average Delivery Time Variation:</strong>
+            <ul>
+              <li>January: <strong>5.01</strong> minutes</li>
+              <li>February: <strong>4.42</strong> minutes</li>
+              <li>March: <strong>4.12</strong> minutes</li>
+              <li>April: <strong>4.07</strong> minutes</li>
+              <li>May: <strong>4.77</strong> minutes</li>
+              <li>June: <strong>3.19</strong> minutes</li>
+              <li>July: <strong>4.23</strong> minutes</li>
+              <li>August: <strong>4.14</strong> minutes</li>
+              <li>September: <strong>4.42</strong> minutes</li>
+              <li>October: <strong>4.50</strong> minutes</li>
+              <li>November: <strong>5.40</strong> minutes</li>
+              <li>December: <strong>5.13</strong> minutes</li>
+            </ul>
+          </li>
+        </ul>
+        <h4>Recommendations for Operational Efficiency</h4>
+        <ul>
+          <li><strong>Reduce Slight &amp; Significant Delivery Delays:</strong>
+            <ul>
+              <li>Optimize delivery partner routing algorithms to minimize last-mile inefficiencies.</li>
+              <li>Improve warehouse-to-dispatch turnaround times.</li>
+            </ul>
+          </li>
+          <li><strong>Address Peak-Season Delays:</strong>
+            <ul>
+              <li>December and October have the slowest delivery times, requiring temporary staffing increases and logistics improvements.</li>
+              <li>Implement predictive demand forecasting to manage workloads better.</li>
+            </ul>
+          </li>
+          <li><strong>Improve Efficiency During Low-Performance Months:</strong>
+            <ul>
+              <li>Increase fleet capacity during high-demand months like November and December.</li>
+              <li>Leverage AI-driven route optimization to improve consistency.</li>
+            </ul>
+          </li>
+          <li><strong>Enhance Customer Satisfaction Metrics:</strong>
+            <ul>
+              <li>Notify customers about potential delays proactively to reduce complaints.</li>
+              <li>Introduce an express delivery option for high-value customers.</li>
+            </ul>
+          </li>
         </ul>
       </div>
     </section>
     
     <!-- Inventory & Product Performance -->
-    <section id="inventory" data-aos="fade-up">
+    <section id="inventory" class="section">
       <h2><i class="fa-solid fa-boxes-stacked"></i> Inventory &amp; Product Performance</h2>
+      
       <!-- Visualization: Inventory Dashboard -->
-      <div class="visualization" data-aos="zoom-in">
+      <div class="visualization">
         <div class="tableauPlaceholder" id="viz1739997289650" style="position: relative">
           <noscript>
             <a href="#">
@@ -449,29 +990,175 @@
             vizElement.style.height = '827px';
           } else {
             vizElement.style.width = '100%';
-            vizElement.style.height = '1127px';
+            vizElement.style.height = '1377px';
           }
           var scriptElement = document.createElement('script');
           scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
           vizElement.parentNode.insertBefore(scriptElement, vizElement);
         </script>
       </div>
-      <!-- Insights: Inventory & Products -->
-      <div class="insights" data-aos="fade-right">
-        <h3>Damaged Stock &amp; Top-Selling Products</h3>
+
+      <div class="insights">
+        <h3><i class="fa-solid fa-box-open"></i> Stock Stories: Mastering the Art of Inventory Intelligence</h3>
+
+        <h4>1. Category-wise Damage Analysis</h4>
         <ul>
-          <li><strong>Observations:</strong> Perishable categories (e.g., Dairy, Fruits &amp; Vegetables, Snacks) exhibit higher damage rates, while Baby and Personal Care have lower damage. Top-selling products include pet treats, toilet cleaner, dish soap, and vitamins.</li>
-          <li><strong>Insights:</strong> The vulnerability of perishables indicates potential packaging or supply chain issues. High-selling and high-margin products offer significant growth opportunities.</li>
-          <li><strong>Recommendations:</strong> Enhance cold storage and packaging protocols; maintain a robust inventory of high-performing products; and consider bundling strategies to maximize profitability.</li>
+          <li><strong>High-Risk Categories:</strong>
+            <ul>
+              <li>Grocery & Staples: <strong>128</strong> damaged units out of 2,869 (<strong>4.46%</strong>)</li>
+              <li>Dairy & Breakfast: <strong>125</strong> damaged units out of 3,263 (<strong>3.83%</strong>)</li>
+              <li>Household Care: <strong>119</strong> damaged units out of 2,559 (<strong>4.65%</strong>)</li>
+            </ul>
+          </li>
+          <li><strong>Low-Risk Categories:</strong>
+            <ul>
+              <li>Baby Care: <strong>51</strong> damaged units out of 1,353 (<strong>3.77%</strong>)</li>
+              <li>Instant & Frozen Food: <strong>85</strong> damaged units out of 2,246 (<strong>3.78%</strong>)</li>
+              <li>Pharmacy: <strong>88</strong> damaged units out of 2,835 (<strong>3.10%</strong>)</li>
+            </ul>
+          </li>
         </ul>
+
+        <h4>2. Product Performance Analysis</h4>
+        <ul>
+          <li><strong>Top Performers by Volume:</strong>
+            <ul>
+              <li>Pet Treats: <strong>473</strong> units (365-day shelf life)</li>
+              <li>Toilet Cleaner: <strong>430</strong> units (365-day shelf life)</li>
+              <li>Dish Soap: <strong>397</strong> units (365-day shelf life)</li>
+              <li>Vitamins: <strong>380</strong> units (365-day shelf life)</li>
+            </ul>
+          </li>
+          <li><strong>Highest Margin Categories:</strong>
+            <ul>
+              <li>Instant & Frozen Food: <strong>40%</strong> margin</li>
+              <li>Pet Care: <strong>35%</strong> margin</li>
+              <li>Personal Care: <strong>35%</strong> margin</li>
+              <li>Snacks & Munchies: <strong>35%</strong> margin</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>3. Shelf Life Analysis</h4>
+        <ul>
+          <li><strong>Long Shelf Life (365 days):</strong>
+            <ul>
+              <li>Highest volume: Pet Treats, Toilet Cleaner, Dish Soap</li>
+              <li>Lowest damage rates: Personal Care products</li>
+            </ul>
+          </li>
+          <li><strong>Short Shelf Life (≤7 days):</strong>
+            <ul>
+              <li>Bread: <strong>270</strong> units</li>
+              <li>Eggs: <strong>246</strong> units</li>
+              <li>Cheese: <strong>182</strong> units</li>
+              <li>Requires special handling and quick turnover</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>4. Profitability Analysis</h4>
+        <ul>
+          <li><strong>High-Margin Categories:</strong>
+            <ul>
+              <li>Instant & Frozen Food (<strong>40%</strong> margin)
+                <ul>
+                  <li>Frozen Pizza: MRP range ₹800-1,600</li>
+                  <li>Ice Cream: MRP range ₹1,000-1,600</li>
+                  <li>Frozen Biryani: MRP range ₹500-1,300</li>
+                </ul>
+              </li>
+              <li>Pet Care (<strong>35%</strong> margin)
+                <ul>
+                  <li>Pet Treats: MRP range ₹1,200-1,400</li>
+                  <li>Cat Food: MRP range ₹1,000-1,365</li>
+                  <li>Dog Food: MRP range ₹750-1,350</li>
+                </ul>
+              </li>
+              <li>Personal Care (<strong>35%</strong> margin)
+                <ul>
+                  <li>Premium Soaps: MRP range ₹1,000-1,460</li>
+                  <li>Lotions: MRP range ₹1,100-1,350</li>
+                  <li>Toothpaste: MRP range ₹1,000-1,350</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li><strong>Low-Margin Categories:</strong>
+            <ul>
+              <li>Grocery & Staples (<strong>15%</strong> margin)
+                <ul>
+                  <li>High volume but lowest margin category</li>
+                  <li>Essential items with price sensitivity</li>
+                  <li>Average MRP range ₹400-1,000</li>
+                </ul>
+              </li>
+              <li>Pharmacy (<strong>20%</strong> margin)
+                <ul>
+                  <li>Regulated pricing affects margins</li>
+                  <li>High MRP items (₹1,000-1,200) but lower margin</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>5. Strategic Recommendations</h4>
+        <ul>
+          <li><strong>Profitability Enhancement:</strong>
+            <ul>
+              <li>Increase premium product mix in 35-40% margin categories</li>
+              <li>Bundle high-margin products with essential items</li>
+              <li>Optimize pricing strategy for premium segments</li>
+            </ul>
+          </li>
+          <li><strong>Inventory Optimization:</strong>
+            <ul>
+              <li>Implement dynamic reordering for high-volume items</li>
+              <li>Optimize storage conditions for perishables</li>
+              <li>Develop specialized handling protocols for high-risk categories</li>
+            </ul>
+          </li>
+          <li><strong>Margin Enhancement:</strong>
+            <ul>
+              <li>Focus on promoting high-margin categories</li>
+              <li>Develop premium product lines in profitable segments</li>
+              <li>Optimize pricing strategy based on shelf life</li>
+            </ul>
+          </li>
+          <li><strong>Damage Prevention:</strong>
+            <ul>
+              <li>Enhance storage infrastructure for Grocery & Staples</li>
+              <li>Implement better handling protocols for Dairy products</li>
+              <li>Regular staff training on product handling</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>6. Key Performance Metrics</h4>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="value">40%</div>
+            <div class="label">Highest Category Margin</div>
+          </div>
+          <div class="metric-card">
+            <div class="value">15%</div>
+            <div class="label">Lowest Category Margin</div>
+          </div>
+          <div class="metric-card">
+            <div class="value">27.5%</div>
+            <div class="label">Average Category Margin</div>
+          </div>
+        </div>
       </div>
     </section>
     
-    <!-- Marketing Campaign & Customer Feedback -->
-    <section id="marketing" data-aos="fade-up">
-      <h2><i class="fa-solid fa-chart-line"></i> Marketing Campaign &amp; Customer Feedback</h2>
+    <!-- First have the marketing section -->
+    <section id="marketing" class="section">
+      <h2><i class="fa-solid fa-chart-line"></i> Marketing Campaign Analysis</h2>
+      
       <!-- Visualization: Marketing & Campaign Effectiveness -->
-      <div class="visualization" data-aos="zoom-in">
+      <div class="visualization">
         <div class="tableauPlaceholder" id="viz1739997267667" style="position: relative">
           <noscript>
             <a href="#">
@@ -512,8 +1199,155 @@
           vizElement.parentNode.insertBefore(scriptElement, vizElement);
         </script>
       </div>
+
+      <div class="insights">
+        <h3><i class="fa-solid fa-bullseye"></i> Campaign Canvas: Painting Success with Data-Driven Marketing</h3>
+        
+        <h4>1. Campaign Performance Metrics</h4>
+        <ul>
+          <li><strong>Average ROAS Range:</strong> <strong>1.51</strong> to <strong>4.00</strong></li>
+          <li><strong>Total Number of Unique Campaigns:</strong> <strong>9</strong> distinct campaign types</li>
+          <li><strong>Campaign Distribution:</strong>
+            <ul>
+              <li>New User Discount</li>
+              <li>Weekend Special</li>
+              <li>Festival Offer</li>
+              <li>Flash Sale</li>
+              <li>Membership Drive</li>
+              <li>Category Promotion</li>
+              <li>App Push Notification</li>
+              <li>Email Campaign</li>
+              <li>Referral Program</li>
+            </ul>
+          </li>
+        </ul>
+
+            <h4>2. Revenue vs. Spend Analysis</h4>
+        <ul>
+          <li><strong>High Revenue Generators:</strong>
+            <ul>
+              <li>Highest Revenue: ₹<strong>9,955.62</strong> (Category Promotion - All)</li>
+              <li>Notable High Revenue Campaigns:
+                <ul>
+                  <li>App Push Notification: ₹<strong>9,152.99</strong></li>
+                  <li>Weekend Special: ₹<strong>9,623.97</strong></li>
+                  <li>Membership Drive: ₹<strong>9,798.33</strong></li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+          <li><strong>Spend Efficiency:</strong>
+            <ul>
+              <li>Most Efficient (High ROAS):
+                <ul>
+                  <li>Festival Offer (New Users): <strong>4.00</strong> ROAS (₹<strong>2,947.82</strong> revenue / ₹<strong>1,318.85</strong> spend)</li>
+                  <li>Email Campaign (Premium): <strong>3.92</strong> ROAS (₹<strong>2,156.09</strong> revenue / ₹<strong>1,457.88</strong> spend)</li>
+                  <li>Category Promotion (Inactive): <strong>3.89</strong> ROAS (₹<strong>6,697.88</strong> revenue / ₹<strong>2,714.78</strong> spend)</li>
+                </ul>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+            <h4>3. Target Audience & Campaign Performance</h4>
+        <ul>
+          <li><strong>Premium Users:</strong>
+            <ul>
+              <li>Average ROAS: <strong>3.2</strong></li>
+              <li>Best performing campaigns: Email Campaign, New User Discount</li>
+            </ul>
+          </li>
+          <li><strong>New Users:</strong>
+            <ul>
+              <li>Average ROAS: <strong>2.8</strong></li>
+              <li>Strong performance in Festival Offers and Category Promotions</li>
+            </ul>
+          </li>
+          <li><strong>Inactive Users:</strong>
+            <ul>
+              <li>Average ROAS: <strong>2.6</strong></li>
+              <li>Moderate performance across most campaigns</li>
+            </ul>
+          </li>
+          <li><strong>All Users:</strong>
+            <ul>
+              <li>Average ROAS: <strong>2.7</strong></li>
+              <li>Consistent performance across various campaigns</li>
+            </ul>
+          </li>
+        </ul>
+
+            <h4>4. Campaign Effectiveness by Type</h4>
+        <ul>
+          <li><strong>Top Performing Campaigns:</strong>
+            <ol>
+              <li>Festival Offer (<strong>4.00</strong> ROAS)</li>
+              <li>Email Campaign (<strong>3.92</strong> ROAS)</li>
+              <li>Category Promotion (<strong>3.89</strong> ROAS)</li>
+            </ol>
+          </li>
+          <li><strong>Moderate Performing Campaigns:</strong>
+            <ol>
+              <li>Weekend Special (<strong>2.98</strong> ROAS)</li>
+              <li>Flash Sale (<strong>2.84</strong> ROAS)</li>
+              <li>Membership Drive (<strong>2.22</strong> ROAS)</li>
+            </ol>
+          </li>
+          <li><strong>Lower Performing Campaigns:</strong>
+            <ol>
+              <li>Referral Program (<strong>1.62</strong>-<strong>1.70</strong> ROAS)</li>
+              <li>Flash Sale to New Users (<strong>1.53</strong>-<strong>1.86</strong> ROAS)</li>
+            </ol>
+          </li>
+        </ul>
+
+        <h4>Recommendations for Optimizing Campaign Performance</h4>
+        <ul>
+          <li><strong>1. Audience Targeting Optimization</strong>
+            <ul>
+              <li>Focus on Premium users for Email Campaigns and New User Discounts</li>
+              <li>Develop specialized content for New Users in Festival Offers</li>
+              <li>Create re-engagement strategies for Inactive users</li>
+            </ul>
+          </li>
+          <li><strong>2. Campaign Budget Allocation</strong>
+            <ul>
+              <li>Increase investment in high-ROAS campaigns (Festival Offer, Email Campaign)</li>
+              <li>Reduce spending on lower-performing Referral Programs</li>
+              <li>Optimize spend distribution based on audience segment performance</li>
+            </ul>
+          </li>
+          <li><strong>3. Campaign Strategy Refinement</strong>
+            <ul>
+              <li>Replicate successful elements of high-performing campaigns</li>
+              <li>A/B test different offer structures for lower-performing campaigns</li>
+              <li>Develop hybrid campaigns combining successful elements of multiple campaigns</li>
+            </ul>
+          </li>
+          <li><strong>4. Performance Monitoring and Optimization</strong>
+            <ul>
+              <li>Implement real-time ROAS tracking</li>
+              <li>Set up automatic budget adjustments based on performance thresholds</li>
+              <li>Regular analysis of campaign metrics for continuous improvement</li>
+            </ul>
+          </li>
+          <li><strong>5. Innovation and Testing</strong>
+            <ul>
+              <li>Experiment with new campaign types for different audience segments</li>
+              <li>Test various creative elements and messaging strategies</li>
+              <li>Implement seasonal variations of successful campaigns</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </section>
+    
+    <!-- Then the sentiment section -->
+    <section id="sentiment" class="section">
+      <h2><i class="fa-solid fa-heart"></i> Customer Sentiment Analysis</h2>
+      
       <!-- Visualization: Customer Feedback & Sentiment -->
-      <div class="visualization" data-aos="zoom-in">
+      <div class="visualization">
         <div class="tableauPlaceholder" id="viz1739997302951" style="position: relative">
           <noscript>
             <a href="#">
@@ -554,101 +1388,284 @@
           vizElement.parentNode.insertBefore(scriptElement, vizElement);
         </script>
       </div>
-      <!-- Insights: Campaign & Feedback Analysis -->
-      <div class="insights" data-aos="fade-up">
-        <h3>Campaign Performance &amp; Feedback Analysis</h3>
+
+      <div class="insights">
+        <h3><i class="fa-solid fa-face-smile"></i> Voice of the Customer: Decoding Digital Satisfaction</h3>
+
+        <h4>1. Overall Customer Satisfaction Metrics</h4>
         <ul>
-          <li><strong>Observations (Campaign):</strong> The scatter plot of advertising spend versus revenue shows a positive trend, though some campaigns (red dots) underperform. Premium segments yield higher ROAS compared to Inactive and New users.</li>
-          <li><strong>Observations (Feedback):</strong> Bar charts reveal polarized customer feedback—with many 3-star and 5-star ratings—and indicate that customer service receives more critical reviews.</li>
-          <li><strong>Observations (Sentiment):</strong> Overall, positive sentiment is increasing while negative sentiment declines slightly, though customer service remains a concern.</li>
-          <li><strong>Recommendations:</strong> Reallocate ad spend toward New and Premium segments, optimize underperforming campaigns, and address customer service issues by refining the app experience and responding to critical feedback.</li>
+          <li><strong>Total Reviews Analyzed:</strong> <strong>5,000</strong> customer feedbacks</li>
+          <li><strong>Overall Satisfaction Score:</strong> <strong>3.35</strong> out of 5</li>
+          <li><strong>Customer Sentiment Distribution:</strong>
+            <ul>
+              <li>Highly Satisfied (⭐⭐⭐⭐⭐): <strong>816</strong> (<strong>16.3%</strong>)</li>
+              <li>Satisfied (⭐⭐⭐⭐): <strong>1,708</strong> (<strong>34.2%</strong>)</li>
+              <li>Neutral (⭐⭐⭐): <strong>1,398</strong> (<strong>28.0%</strong>)</li>
+              <li>Dissatisfied (⭐⭐): <strong>538</strong> (<strong>10.8%</strong>)</li>
+              <li>Highly Dissatisfied (⭐): <strong>540</strong> (<strong>10.8%</strong>)</li>
+          </ul>
+        </li>
+        </ul>
+
+        <h4>2. Service Category Performance</h4>
+        <ul>
+          <li><strong>Delivery Services:</strong>
+            <ul>
+              <li>Highest rated category</li>
+              <li><strong>85%</strong> positive feedback rate</li>
+              <li>Key Strength: On-time delivery and professional delivery staff</li>
+          </ul>
+        </li>
+          <li><strong>Mobile Application:</strong>
+          <ul>
+              <li>Second-highest rated service</li>
+              <li><strong>82%</strong> positive feedback rate</li>
+              <li>Key Strength: User interface and ease of ordering</li>
+          </ul>
+        </li>
+          <li><strong>Product Experience:</strong>
+            <ul>
+              <li>Consistent performance</li>
+              <li><strong>82%</strong> satisfaction rate</li>
+              <li><strong>18%</strong> reported quality concerns</li>
+          </ul>
+        </li>
+          <li><strong>Customer Support:</strong>
+            <ul>
+              <li>Area needing most improvement</li>
+              <li><strong>25%</strong> negative feedback rate</li>
+              <li>Key Issues: Response time and resolution quality</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>3. Customer Loyalty Indicators</h4>
+        <ul>
+          <li><strong>Net Promoter Score Components:</strong>
+            <ul>
+              <li>Brand Promoters: <strong>16.3%</strong> of customers</li>
+              <li>Neutral Customers: <strong>62.2%</strong> of base</li>
+              <li>Potential Detractors: <strong>21.6%</strong> of users</li>
+          </ul>
+        </li>
+          <li><strong>Customer Retention Risk:</strong>
+              <ul>
+              <li>High Risk (1-2 ⭐): <strong>21.6%</strong></li>
+              <li>Moderate Risk (3 ⭐): <strong>28.0%</strong></li>
+              <li>Low Risk (4-5 ⭐): <strong>50.5%</strong></li>
+              </ul>
+            </li>
+        </ul>
+
+        <h4>4. Action Plan for Customer Experience Enhancement</h4>
+        <ul>
+          <li><strong>Immediate Priority Actions:</strong>
+            <ul>
+              <li><strong>Customer Service Reform:</strong>
+                <ul>
+                  <li>Implement 24/7 support channels</li>
+                  <li>Reduce response time to under 2 hours</li>
+                  <li>Enhanced training for support staff</li>
+              </ul>
+            </li>
+              <li><strong>Quality Control Enhancement:</strong>
+            <ul>
+                  <li>Strengthen vendor quality checks</li>
+                  <li>Implement real-time quality monitoring</li>
+                  <li>Enhance packaging standards</li>
+          </ul>
+        </li>
+            </ul>
+          </li>
+          <li><strong>Medium-Term Improvements:</strong>
+          <ul>
+              <li><strong>App Enhancement:</strong>
+              <ul>
+                  <li>Regular feature updates based on feedback</li>
+                  <li>Improved search and filter options</li>
+                  <li>Enhanced order tracking capabilities</li>
+              </ul>
+            </li>
+              <li><strong>Delivery Optimization:</strong>
+              <ul>
+                  <li>Expand delivery fleet coverage</li>
+                  <li>Implement AI-driven route optimization</li>
+                  <li>Enhanced delivery time predictions</li>
+              </ul>
+            </li>
+            </ul>
+          </li>
+          <li><strong>Long-Term Strategic Initiatives:</strong>
+              <ul>
+              <li>Implement automated feedback analysis system</li>
+              <li>Develop predictive customer satisfaction models</li>
+              <li>Create personalized service recovery programs</li>
+              </ul>
+            </li>
         </ul>
       </div>
     </section>
     
-    <!-- Final Strategic Recommendations & Key Takeaways -->
-    <section id="strategy" data-aos="fade-up">
+    <!-- FINAL STRATEGIC RECOMMENDATIONS & KEY TAKEAWAYS -->
+    <section id="strategy" class="section">
       <h2><i class="fa-solid fa-lightbulb"></i> Final Strategic Recommendations &amp; Key Takeaways</h2>
-      <ol>
-        <li><strong>Campaign Optimization:</strong>
-          <ul>
-            <li>Reduce spending on low-performing campaigns (especially for Inactive Users) and reallocate budgets toward New and Premium segments.</li>
-            <li>Enhance landing pages and call-to-action messaging to improve conversion rates.</li>
-          </ul>
-        </li>
-        <li><strong>Customer Engagement &amp; Service:</strong>
-          <ul>
-            <li>Retain premium customers through exclusive benefits and loyalty programs.</li>
-            <li>Implement onboarding and retention strategies for New customers, and targeted re-engagement initiatives for Inactive users.</li>
-            <li>Address customer service challenges by streamlining response processes and enhancing overall user experience.</li>
-          </ul>
-        </li>
-        <li><strong>Delivery &amp; Operational Efficiency:</strong>
-          <ul>
-            <li>Identify and resolve operational bottlenecks causing minor delays using predictive analytics and route optimization.</li>
-            <li>Enhance real-time tracking to sustain high delivery standards.</li>
-          </ul>
-        </li>
-        <li><strong>Inventory &amp; Product Strategy:</strong>
-          <ul>
-            <li>Improve storage and packaging protocols for perishables to reduce damage rates.</li>
-            <li>Ensure a consistent supply of high-performing and high-margin products; consider bundling strategies for added profitability.</li>
-          </ul>
-        </li>
-        <li><strong>Marketing &amp; Pricing:</strong>
-          <ul>
-            <li>Monitor and adjust pricing strategies for lower-margin categories while leveraging high-margin segments.</li>
-            <li>Conduct A/B tests on ad creatives and remarketing campaigns to further improve conversion rates.</li>
-          </ul>
-        </li>
-      </ol>
-      <p>
-        Digital payments continue to rise while cash usage declines. These insights and recommendations underscore the need for a dynamic, data-driven strategy to drive future growth and operational excellence.
-      </p>
+      
+      <div class="insights">
+        <h3><i class="fa-solid fa-chess"></i> Strategic Symphony: Orchestrating Blinkit's Future Growth</h3>
+
+        <h4>1. Revenue & Payment Optimization</h4>
+        <ul>
+          <li><strong>Digital Payment Growth:</strong>
+            <ul>
+              <li>Leverage card transaction momentum (<strong>4.77%</strong> growth) with targeted cashback</li>
+              <li>Revive UPI usage (counter <strong>1.75%</strong> decline) through merchant partnerships</li>
+              <li>Implement wallet-specific promotions to reverse <strong>2.98%</strong> decline</li>
+            </ul>
+          </li>
+          <li><strong>Seasonal Strategy:</strong>
+            <ul>
+              <li>Focus marketing during peak months (May-July) across all payment methods</li>
+              <li>Develop special promotions for low-performance months (November-December)</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>2. Customer Segment Optimization</h4>
+        <ul>
+          <li><strong>Segment-Specific Engagement:</strong>
+            <ul>
+              <li>Premium Users: Focus on high-margin categories (<strong>35-40%</strong>) and exclusive access</li>
+              <li>Regular Customers (<strong>6,598</strong> orders): Implement subscription models</li>
+              <li>New Users (<strong>6,829</strong> orders): Enhanced onboarding with category-specific offers</li>
+              <li>Inactive Users (<strong>6,350</strong> orders): Re-engagement through personalized campaigns</li>
+            </ul>
+          </li>
+          <li><strong>Geographic Expansion:</strong>
+            <ul>
+              <li>Strengthen presence in Tier 1 cities with full-category offerings</li>
+              <li>Customize assortment for Tier 2 cities based on local preferences</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>3. Operational & Inventory Excellence</h4>
+        <ul>
+          <li><strong>Delivery Optimization:</strong>
+            <ul>
+              <li>Reduce delivery delays from current <strong>136</strong> significant delays</li>
+              <li>Maintain sub-4-minute delivery average (current best: <strong>3.92</strong> mins)</li>
+              <li>Implement AI-driven route optimization for peak hours</li>
+            </ul>
+          </li>
+          <li><strong>Inventory Management:</strong>
+            <ul>
+              <li>Reduce damage rates in high-risk categories (currently <strong>4.46%</strong> in Grocery)</li>
+              <li>Optimize storage for <strong>40%</strong> margin categories (Frozen Foods)</li>
+              <li>Special handling protocols for perishables (≤7 days shelf life)</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>4. Marketing & Campaign Strategy</h4>
+        <ul>
+          <li><strong>High-ROI Campaign Focus:</strong>
+            <ul>
+              <li>Scale Festival Offers (<strong>4.00</strong> ROAS)</li>
+              <li>Expand Email Campaigns (<strong>3.92</strong> ROAS)</li>
+              <li>Optimize Category Promotions (<strong>3.89</strong> ROAS)</li>
+            </ul>
+          </li>
+          <li><strong>Segment-Based Marketing:</strong>
+            <ul>
+              <li>Premium Users: Focus on <strong>35-40%</strong> margin categories</li>
+              <li>New Users: Bundle high-margin with essential items</li>
+              <li>Inactive Users: Personalized re-engagement offers</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>5. Customer Experience Enhancement</h4>
+        <ul>
+          <li><strong>Service Quality:</strong>
+            <ul>
+              <li>Improve satisfaction score from <strong>3.35</strong> to target <strong>4.0</strong></li>
+              <li>Reduce negative feedback rate from <strong>25%</strong> to <strong>15%</strong></li>
+              <li>Implement 24/7 customer support with 2-hour response time</li>
+            </ul>
+          </li>
+          <li><strong>Product Quality:</strong>
+            <ul>
+              <li>Enhance vendor quality checks for perishables</li>
+              <li>Implement real-time quality monitoring</li>
+              <li>Strengthen packaging standards for fragile items</li>
+            </ul>
+          </li>
+        </ul>
+
+        <h4>6. Key Performance Targets</h4>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="value">40%</div>
+            <div class="label">Target High-Margin Category Share</div>
+          </div>
+          <div class="metric-card">
+            <div class="value">4.0</div>
+            <div class="label">Target Customer Rating</div>
+          </div>
+          <div class="metric-card">
+            <div class="value">3.5+</div>
+            <div class="label">Target Campaign ROAS</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Footer Section -->
+    <section id="footer" class="section" style="border-bottom: none; text-align: center;">
+      <div class="insights" style="background: linear-gradient(to right bottom, #fff, #fff8f0);">
+        <h3 style="border-bottom: none;">Made with <i class="fa-solid fa-heart" style="color: #FF6F00;"></i> by Tanishq Prabhu</h3>
+        <div style="margin-top: 20px;">
+          <a href="https://github.com/tanishq-ctrl" target="_blank" style="margin: 0 15px; color: #171515; font-size: 2rem;">
+            <i class="fab fa-github"></i>
+          </a>
+          <a href="https://www.linkedin.com/in/tanishq-prabhu-b71467166/" target="_blank" style="margin: 0 15px; color: #0077b5; font-size: 2rem;">
+            <i class="fab fa-linkedin"></i>
+          </a>
+        </div>
+      </div>
     </section>
   </div>
-  
-  <!-- Three.js Animation -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- Add smooth scroll behavior -->
   <script>
-    let scene, camera, renderer, cube;
-    function init() {
-      const container = document.getElementById('threejs-container');
-      scene = new THREE.Scene();
-      camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-      renderer = new THREE.WebGLRenderer({ antialias: true });
-      renderer.setSize(container.clientWidth, container.clientHeight);
-      container.appendChild(renderer.domElement);
-      
-      const geometry = new THREE.BoxGeometry();
-      const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
-      cube = new THREE.Mesh(geometry, material);
-      scene.add(cube);
-      
-      camera.position.z = 3;
-    }
-    function animate() {
-      requestAnimationFrame(animate);
-      cube.rotation.x += 0.01;
-      cube.rotation.y += 0.01;
-      renderer.render(scene, camera);
-    }
-    window.addEventListener('resize', () => {
-      const container = document.getElementById('threejs-container');
-      camera.aspect = container.clientWidth / container.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(container.clientWidth, container.clientHeight);
+    document.querySelectorAll('nav a').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const section = document.querySelector(this.getAttribute('href'));
+        section.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      });
     });
-    init();
-    animate();
   </script>
-  <!-- AOS (Animate On Scroll) Initialization -->
-  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+
+  <!-- Add this script at the end of the body -->
   <script>
-    AOS.init({
-      duration: 800,
-      easing: 'ease-in-out',
-      once: true
+    // Simple intersection observer for section animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, {
+      threshold: 0.1
+    });
+
+    // Observe all sections
+    document.querySelectorAll('section').forEach(section => {
+      observer.observe(section);
     });
   </script>
 </body>
