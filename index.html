@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blinkit Data Storytelling Analysis</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Poppins:400,600,700&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <!-- AOS (Animate On Scroll) CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+  <style>
+    :root {
+      --primary-color: #FF6F00;
+      --secondary-color: #FFAB40;
+      --accent-color: #FF8C00;
+      --light-bg: #fff8f0;
+      --overlay-color: rgba(0, 0, 0, 0.5);
+    }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--light-bg);
+      color: #333;
+      line-height: 1.6;
+    }
+    /* Hero Section */
+    .hero {
+      position: relative;
+      height: 60vh;
+      overflow: hidden;
+    }
+    /* Video Container for the YouTube iframe */
+    .video-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .video-container iframe {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 100vw;
+      height: 100vh;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      pointer-events: none;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--overlay-color);
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: #fff;
+      animation: fadeIn 2s ease-in-out;
+      /* Make the content container fill the hero so it's centered nicely */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+    .hero-content h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+    .hero-content p {
+      font-size: 1.2rem;
+    }
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: var(--accent-color);
+      padding: 10px 0;
+      text-align: center;
+      transition: background 0.3s ease;
+    }
+    nav a {
+      color: #fff;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+    nav a:hover {
+      color: #fff3e0;
+    }
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 30px auto;
+      background: #fff;
+      padding: 30px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      border-radius: 8px;
+    }
+    section {
+      margin-bottom: 60px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #eee;
+      animation: fadeIn 1s ease-in-out;
+    }
+    section:last-of-type {
+      border-bottom: none;
+    }
+    h2 {
+      margin: 20px 0;
+      color: var(--primary-color);
+    }
+    h3 {
+      margin: 15px 0;
+      color: #E65100;
+    }
+    h4 {
+      margin-top: 10px;
+      color: #BF360C;
+    }
+    p {
+      margin: 10px 0;
+    }
+    ul, ol {
+      margin-left: 20px;
+      margin-bottom: 10px;
+    }
+    .visualization {
+      margin-bottom: 20px;
+    }
+    .insights {
+      padding: 15px 20px;
+      background: #fff3e0;
+      border-left: 6px solid var(--primary-color);
+      margin-bottom: 20px;
+      border-radius: 4px;
+      transition: transform 0.3s ease;
+    }
+    .insights:hover {
+      transform: translateX(5px);
+    }
+    .card {
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    #threejs-container {
+      width: 100%;
+      height: 400px;
+      background: #000;
+      margin-bottom: 40px;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section with YouTube Video Background -->
+  <section class="hero" data-aos="fade-in">
+    <div class="video-container">
+      <!-- Replace with your desired YouTube video URL and parameters -->
+      <iframe
+        src="https://www.youtube.com/embed/FmllsQZyXj4?autoplay=1&mute=1&loop=1&playlist=FmllsQZyXj4"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        playsinline
+        muted
+        title="Background Video">
+      </iframe>
+    </div>
+    <div class="hero-content">
+      <h1><i class="fa-solid fa-bolt"></i> Blinkit Analysis</h1>
+      <p>Data Insights from March 2023 to November 2024</p>
+    </div>
+  </section>
+  
+  <!-- Sticky Navigation -->
+  <nav>
+    <a href="#intro"><i class="fa-solid fa-info-circle"></i> Introduction</a>
+    <a href="#sales"><i class="fa-solid fa-credit-card"></i> Sales &amp; Payments</a>
+    <a href="#customer"><i class="fa-solid fa-user-group"></i> Customer Insights</a>
+    <a href="#operations"><i class="fa-solid fa-truck"></i> Delivery &amp; Operations</a>
+    <a href="#inventory"><i class="fa-solid fa-boxes-stacked"></i> Inventory &amp; Products</a>
+    <a href="#marketing"><i class="fa-solid fa-chart-line"></i> Campaigns &amp; Feedback</a>
+    <a href="#strategy"><i class="fa-solid fa-lightbulb"></i> Strategic Recommendations</a>
+  </nav>
+  
+  <!-- Three.js Animation Container -->
+  <div id="threejs-container"></div>
+  
+  <div class="container">
+    <!-- Introduction Section -->
+    <section id="intro" data-aos="fade-up">
+      <h2><i class="fa-solid fa-info"></i> Introduction</h2>
+      <p>
+        Welcome to our comprehensive Blinkit analysis. Using data from <strong>March 2023 to November 2024</strong>, we have developed interactive Tableau visualizations that capture key trends—from sales and payment methods to customer behavior, delivery efficiency, inventory management, and marketing performance. Each section presents a visualization followed by detailed observations, insights, and actionable recommendations.
+      </p>
+    </section>
+    
+    <!-- Sales & Payment Analysis -->
+    <section id="sales" data-aos="fade-up">
+      <h2><i class="fa-solid fa-credit-card"></i> Sales &amp; Payment Analysis</h2>
+      <!-- Visualization: Overall Sales Trend -->
+      <div class="visualization" data-aos="zoom-in">
+        <div class="tableauPlaceholder" id="viz1739997212943" style="position: relative">
+          <noscript>
+            <a href="#">
+              <img alt="Sales &amp; Payment Performance" src="https://public.tableau.com/static/images/Sa/SalesandPaymentPerformance/SalesPaymentPerformance/1_rss.png" style="border: none" />
+            </a>
+          </noscript>
+          <object class="tableauViz" style="display:none;">
+            <param name="host_url" value="https%3A%2F%2Fpublic.tableau.com%2F" />
+            <param name="embed_code_version" value="3" />
+            <param name="site_root" value="" />
+            <param name="name" value="SalesandPaymentPerformance/SalesPaymentPerformance" />
+            <param name="tabs" value="no" />
+            <param name="toolbar" value="yes" />
+            <param name="static_image" value="https://public.tableau.com/static/images/Sa/SalesandPaymentPerformance/SalesPaymentPerformance/1.png" />
+            <param name="animate_transition" value="yes" />
+            <param name="display_static_image" value="yes" />
+            <param name="display_spinner" value="yes" />
+            <param name="display_overlay" value="yes" />
+            <param name="display_count" value="yes" />
+            <param name="language" value="en-GB" />
+          </object>
+        </div>
+        <script type="text/javascript">
+          var divElement = document.getElementById('viz1739997212943');
+          var vizElement = divElement.getElementsByTagName('object')[0];
+          if (divElement.offsetWidth > 800) {
+            vizElement.style.width = '1000px';
+            vizElement.style.height = '827px';
+          } else if (divElement.offsetWidth > 500) {
+            vizElement.style.width = '1000px';
+            vizElement.style.height = '827px';
+          } else {
+            vizElement.style.width = '100%';
+            vizElement.style.height = '927px';
+          }
+          var scriptElement = document.createElement('script');
+          scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+          vizElement.parentNode.insertBefore(scriptElement, vizElement);
+        </script>
+      </div>
+      <!-- Insights: Overall Sales Trend -->
+      <div class="insights" data-aos="fade-right">
+        <h3>Overall Sales Trend Over Time (2023 &amp; 2024)</h3>
+        <ul>
+          <li><strong>Observations:</strong> Monthly data reveals that Card transactions peaked in mid-2023 (~193K) before declining in 2024 (~175K). Cash transactions surged in April 2023 (~165K) before dropping sharply (~24K in November). UPI and Wallet methods initially peaked (UPI ~183K; Wallet ~160K) with modest declines thereafter.</li>
+          <li><strong>Insights:</strong> Card payments, while stable, decreased later—hinting at a shift toward digital alternatives. The significant drop in cash usage reinforces the digital payment trend, while UPI and Wallet growth is inconsistent.</li>
+          <li><strong>Recommendations:</strong> Investigate the factors behind the cash decline and enhance promotions for UPI and Wallet. Also, analyze potential causes for the card payment dip, such as transaction fees or competition.</li>
+        </ul>
+      </div>
+      <!-- Insights: Sales by Payment Method -->
+      <div class="insights" data-aos="fade-left">
+        <h3>Sales by Payment Method</h3>
+        <ul>
+          <li><strong>Observations:</strong> Sales rank as follows—Card (~2.86M), Cash (~2.77M), Wallet (~2.71M), UPI (~2.65M).</li>
+          <li><strong>Insights:</strong> Despite the decline in card transactions, they remain dominant due to strong consumer trust. Meanwhile, digital payment methods are gradually gaining ground.</li>
+          <li><strong>Recommendations:</strong> Consider targeted cashback or reward programs for digital payments and streamline the card transaction process.</li>
+        </ul>
+      </div>
+    </section>
+    
+    <!-- Customer Insights & Segmentation -->
+    <section id="customer" data-aos="fade-up">
+      <h2><i class="fa-solid fa-user-group"></i> Customer Insights &amp; Segmentation</h2>
+      <!-- Visualization: Customer Insights Dashboard -->
+      <div class="visualization" data-aos="zoom-in">
+        <div class="tableauPlaceholder" id="viz1739997253590" style="position: relative">
+          <noscript>
+            <a href="#">
+              <img alt="Customer Insights &amp; Segmentation" src="https://public.tableau.com/static/images/Cu/CustomerInsightsandSegmentation_17399925565130/CustomerInsightsSegmentation/1_rss.png" style="border: none" />
+            </a>
+          </noscript>
+          <object class="tableauViz" style="display:none;">
+            <param name="host_url" value="https%3A%2F%2Fpublic.tableau.com%2F" />
+            <param name="embed_code_version" value="3" />
+            <param name="site_root" value="" />
+            <param name="name" value="CustomerInsightsandSegmentation_17399925565130/CustomerInsightsSegmentation" />
+            <param name="tabs" value="no" />
+            <param name="toolbar" value="yes" />
+            <param name="static_image" value="https://public.tableau.com/static/images/Cu/CustomerInsightsandSegmentation_17399925565130/CustomerInsightsSegmentation/1.png" />
+            <param name="animate_transition" value="yes" />
+            <param name="display_static_image" value="yes" />
+            <param name="display_spinner" value="yes" />
+            <param name="display_overlay" value="yes" />
+            <param name="display_count" value="yes" />
+            <param name="language" value="en-GB" />
+          </object>
+        </div>
+        <script type="text/javascript">
+          var divElement = document.getElementById('viz1739997253590');
+          var vizElement = divElement.getElementsByTagName('object')[0];
+          if (divElement.offsetWidth > 800) {
+            vizElement.style.width = '1000px';
+            vizElement.style.height = '827px';
+          } else if (divElement.offsetWidth > 500) {
+            vizElement.style.width = '1000px';
+            vizElement.style.height = '827px';
+          } else {
+            vizElement.style.width = '100%';
+            vizElement.style.height = '1377px';
+          }
+          var scriptElement = document.createElement('script');
+          scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+          vizElement.parentNode.insertBefore(scriptElement, vizElement);
+        </script>
+      </div>
+      <!-- Insights: Customer Segmentation -->
+      <div class="insights" data-aos="fade-right">
+        <h3>Customer Lifetime Value &amp; Segmentation</h3>
+        <ul>
+          <li><strong>Observations:</strong> Analysis shows that Premium customers have high orders and value; New customers display a wide spending range with fewer repeat orders; Regular customers offer balanced performance; and Inactive customers show limited engagement.</li>
+          <li><strong>Insights:</strong> Premium customers drive revenue, while New and Inactive segments require targeted engagement strategies.</li>
+          <li><strong>Recommendations:</strong> Retain premium customers with loyalty programs, offer targeted incentives for new users, and re-engage inactive users through personalized campaigns.</li>
+        </ul>
+        <h3>Customer Distribution by Location</h3>
+        <ul>
+          <li><strong>Observations:</strong> Customers span India, Bangladesh, Nepal, and Sri Lanka. New customers are concentrated in metropolitan areas; Premium customers in select urban centers; and Regular customers are widely distributed with a higher density in tier‑2 cities.</li>
+          <li><strong>Insights:</strong> Urban regions are key for digital adoption, while the widespread distribution of inactive users suggests the need for localized strategies.</li>
+          <li><strong>Recommendations:</strong> Implement location-based promotions and tailor campaigns according to regional dynamics.</li>
+        </ul>
+      </div>
+    </section>
+    
+    <!-- Delivery & Operational Performance -->
+    <section id="operations" data-aos="fade-up">
+      <h2><i class="fa-solid fa-truck"></i> Delivery &amp; Operational Performance</h2>
+      <!-- Visualization: Delivery Efficiency Dashboard -->
+      <div class="visualization" data-aos="zoom-in">
+        <div class="tableauPlaceholder" id="viz1739997278443" style="position: relative">
+          <noscript>
+            <a href="#">
+              <img alt="Delivery &amp; Operational Efficiency" src="https://public.tableau.com/static/images/De/DeliveryandOperationalEfficiency/DeliveryOperationalEfficiency/1_rss.png" style="border: none" />
+            </a>
+          </noscript>
+          <object class="tableauViz" style="display:none;">
+            <param name="host_url" value="https%3A%2F%2Fpublic.tableau.com%2F" />
+            <param name="embed_code_version" value="3" />
+            <param name="site_root" value="" />
+            <param name="name" value="DeliveryandOperationalEfficiency/DeliveryOperationalEfficiency" />
+            <param name="tabs" value="no" />
+            <param name="toolbar" value="yes" />
+            <param name="static_image" value="https://public.tableau.com/static/images/De/DeliveryandOperationalEfficiency/DeliveryOperationalEfficiency/1.png" />
+            <param name="animate_transition" value="yes" />
+            <param name="display_static_image" value="yes" />
+            <param name="display_spinner" value="yes" />
+            <param name="display_overlay" value="yes" />
+            <param name="display_count" value="yes" />
+            <param name="language" value="en-GB" />
+          </object>
+        </div>
+        <script type="text/javascript">
+          var divElement = document.getElementById('viz1739997278443');
+          var vizElement = divElement.getElementsByTagName('object')[0];
+          if (divElement.offsetWidth > 800) {
+            vizElement.style.width = '1000px';
+            vizElement.style.height = '827px';
+          } else if (divElement.offsetWidth > 500) {
+            vizElement.style.width = '1000px';
+            vizElement.style.height = '827px';
+          } else {
+            vizElement.style.width = '100%';
+            vizElement.style.height = '877px';
+          }
+          var scriptElement = document.createElement('script');
+          scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+          vizElement.parentNode.insertBefore(scriptElement, vizElement);
+        </script>
+      </div>
+      <!-- Insights: Delivery & Operations -->
+      <div class="insights" data-aos="fade-left">
+        <h3>Delivery Time Deviations &amp; Average Delivery Times</h3>
+        <ul>
+          <li><strong>Observations:</strong> Although most orders are delivered on time, many experience minor delays (5–10 minutes) and a few see significant delays (15+ minutes). Average delivery times range from 3.9 to 5.3 minutes, with a slight increase toward the end of the period.</li>
+          <li><strong>Insights:</strong> High order volumes during peak periods can strain logistics, where even minor delays affect customer satisfaction.</li>
+          <li><strong>Recommendations:</strong> Identify operational bottlenecks, optimize delivery routes, and consider AI-based predictive analytics to manage peak demand.</li>
+        </ul>
+      </div>
+    </section>
+    
+    <!-- Inventory & Product Performance -->
+    <section id="inventory" data-aos="fade-up">
+      <h2><i class="fa-solid fa-boxes-stacked"></i> Inventory &amp; Product Performance</h2>
+      <!-- Visualization: Inventory Dashboard -->
+      <div class="visualization" data-aos="zoom-in">
+        <div class="tableauPlaceholder" id="viz1739997289650" style="position: relative">
+          <noscript>
+            <a href="#">
+              <img alt="Inventory &amp; Product Performance" src="https://public.tableau.com/static/images/In/InventoryandProductPerformance/InventoryProductPerformance/1_rss.png" style="border: none" />
+            </a>
+          </noscript>
+          <object class="tableauViz" style="display:none;">
+            <param name="host_url" value="https%3A%2F%2Fpublic.tableau.com%2F" />
+            <param name="embed_code_version" value="3" />
+            <param name="site_root" value="" />
+            <param name="name" value="InventoryandProductPerformance/InventoryProductPerformance" />
+            <param name="tabs" value="no" />
+            <param name="toolbar" value="yes" />
+            <param name="static_image" value="https://public.tableau.com/static/images/In/InventoryandProductPerformance/InventoryProductPerformance/1.png" />
+            <param name="animate_transition" value="yes" />
+            <param name="display_static_image" value="yes" />
+            <param name="display_spinner" value="yes" />
+            <param name="display_overlay" value="yes" />
+            <param name="display_count" value="yes" />
+            <param name="language" value="en-GB" />
+          </object>
+        </div>
+        <script type="text/javascript">
+          var divElement = document.getElementById('viz1739997289650');
+          var vizElement = divElement.getElementsByTagName('object')[0];
+          if (divElement.offsetWidth > 800) {
+            vizElement.style.width = '1000px';
+            vizElement.style.height = '827px';
+          } else if (divElement.offsetWidth > 500) {
+            vizElement.style.width = '1000px';
+            vizElement.style.height = '827px';
+          } else {
+            vizElement.style.width = '100%';
+            vizElement.style.height = '1127px';
+          }
+          var scriptElement = document.createElement('script');
+          scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+          vizElement.parentNode.insertBefore(scriptElement, vizElement);
+        </script>
+      </div>
+      <!-- Insights: Inventory & Products -->
+      <div class="insights" data-aos="fade-right">
+        <h3>Damaged Stock &amp; Top-Selling Products</h3>
+        <ul>
+          <li><strong>Observations:</strong> Perishable categories (e.g., Dairy, Fruits &amp; Vegetables, Snacks) exhibit higher damage rates, while Baby and Personal Care have lower damage. Top-selling products include pet treats, toilet cleaner, dish soap, and vitamins.</li>
+          <li><strong>Insights:</strong> The vulnerability of perishables indicates potential packaging or supply chain issues. High-selling and high-margin products offer significant growth opportunities.</li>
+          <li><strong>Recommendations:</strong> Enhance cold storage and packaging protocols; maintain a robust inventory of high-performing products; and consider bundling strategies to maximize profitability.</li>
+        </ul>
+      </div>
+    </section>
+    
+    <!-- Marketing Campaign & Customer Feedback -->
+    <section id="marketing" data-aos="fade-up">
+      <h2><i class="fa-solid fa-chart-line"></i> Marketing Campaign &amp; Customer Feedback</h2>
+      <!-- Visualization: Marketing & Campaign Effectiveness -->
+      <div class="visualization" data-aos="zoom-in">
+        <div class="tableauPlaceholder" id="viz1739997267667" style="position: relative">
+          <noscript>
+            <a href="#">
+              <img alt="Marketing &amp; Campaign Effectiveness" src="https://public.tableau.com/static/images/Ma/MarketingandCampaignEffectiveness/MarketingCampaignEffectiveness/1_rss.png" style="border: none" />
+            </a>
+          </noscript>
+          <object class="tableauViz" style="display:none;">
+            <param name="host_url" value="https%3A%2F%2Fpublic.tableau.com%2F" />
+            <param name="embed_code_version" value="3" />
+            <param name="site_root" value="" />
+            <param name="name" value="MarketingandCampaignEffectiveness/MarketingCampaignEffectiveness" />
+            <param name="tabs" value="no" />
+            <param name="toolbar" value="yes" />
+            <param name="static_image" value="https://public.tableau.com/static/images/Ma/MarketingandCampaignEffectiveness/MarketingCampaignEffectiveness/1.png" />
+            <param name="animate_transition" value="yes" />
+            <param name="display_static_image" value="yes" />
+            <param name="display_spinner" value="yes" />
+            <param name="display_overlay" value="yes" />
+            <param name="display_count" value="yes" />
+            <param name="language" value="en-GB" />
+          </object>
+        </div>
+        <script type="text/javascript">
+          var divElement = document.getElementById('viz1739997267667');
+          var vizElement = divElement.getElementsByTagName('object')[0];
+          if (divElement.offsetWidth > 800) {
+            vizElement.style.width = '1000px';
+            vizElement.style.height = '827px';
+          } else if (divElement.offsetWidth > 500) {
+            vizElement.style.width = '1000px';
+            vizElement.style.height = '827px';
+          } else {
+            vizElement.style.width = '100%';
+            vizElement.style.height = '977px';
+          }
+          var scriptElement = document.createElement('script');
+          scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+          vizElement.parentNode.insertBefore(scriptElement, vizElement);
+        </script>
+      </div>
+      <!-- Visualization: Customer Feedback & Sentiment -->
+      <div class="visualization" data-aos="zoom-in">
+        <div class="tableauPlaceholder" id="viz1739997302951" style="position: relative">
+          <noscript>
+            <a href="#">
+              <img alt="Customer Feedback &amp; Sentiment" src="https://public.tableau.com/static/images/Cu/CustomerFeedbackandSentiment/CustomerFeedbackSentiment/1_rss.png" style="border: none" />
+            </a>
+          </noscript>
+          <object class="tableauViz" style="display:none;">
+            <param name="host_url" value="https%3A%2F%2Fpublic.tableau.com%2F" />
+            <param name="embed_code_version" value="3" />
+            <param name="site_root" value="" />
+            <param name="name" value="CustomerFeedbackandSentiment/CustomerFeedbackSentiment" />
+            <param name="tabs" value="no" />
+            <param name="toolbar" value="yes" />
+            <param name="static_image" value="https://public.tableau.com/static/images/Cu/CustomerFeedbackandSentiment/CustomerFeedbackSentiment/1.png" />
+            <param name="animate_transition" value="yes" />
+            <param name="display_static_image" value="yes" />
+            <param name="display_spinner" value="yes" />
+            <param name="display_overlay" value="yes" />
+            <param name="display_count" value="yes" />
+            <param name="language" value="en-GB" />
+          </object>
+        </div>
+        <script type="text/javascript">
+          var divElement = document.getElementById('viz1739997302951');
+          var vizElement = divElement.getElementsByTagName('object')[0];
+          if (divElement.offsetWidth > 800) {
+            vizElement.style.width = '1000px';
+            vizElement.style.height = '827px';
+          } else if (divElement.offsetWidth > 500) {
+            vizElement.style.width = '1000px';
+            vizElement.style.height = '827px';
+          } else {
+            vizElement.style.width = '100%';
+            vizElement.style.height = '1027px';
+          }
+          var scriptElement = document.createElement('script');
+          scriptElement.src = 'https://public.tableau.com/javascripts/api/viz_v1.js';
+          vizElement.parentNode.insertBefore(scriptElement, vizElement);
+        </script>
+      </div>
+      <!-- Insights: Campaign & Feedback Analysis -->
+      <div class="insights" data-aos="fade-up">
+        <h3>Campaign Performance &amp; Feedback Analysis</h3>
+        <ul>
+          <li><strong>Observations (Campaign):</strong> The scatter plot of advertising spend versus revenue shows a positive trend, though some campaigns (red dots) underperform. Premium segments yield higher ROAS compared to Inactive and New users.</li>
+          <li><strong>Observations (Feedback):</strong> Bar charts reveal polarized customer feedback—with many 3-star and 5-star ratings—and indicate that customer service receives more critical reviews.</li>
+          <li><strong>Observations (Sentiment):</strong> Overall, positive sentiment is increasing while negative sentiment declines slightly, though customer service remains a concern.</li>
+          <li><strong>Recommendations:</strong> Reallocate ad spend toward New and Premium segments, optimize underperforming campaigns, and address customer service issues by refining the app experience and responding to critical feedback.</li>
+        </ul>
+      </div>
+    </section>
+    
+    <!-- Final Strategic Recommendations & Key Takeaways -->
+    <section id="strategy" data-aos="fade-up">
+      <h2><i class="fa-solid fa-lightbulb"></i> Final Strategic Recommendations &amp; Key Takeaways</h2>
+      <ol>
+        <li><strong>Campaign Optimization:</strong>
+          <ul>
+            <li>Reduce spending on low-performing campaigns (especially for Inactive Users) and reallocate budgets toward New and Premium segments.</li>
+            <li>Enhance landing pages and call-to-action messaging to improve conversion rates.</li>
+          </ul>
+        </li>
+        <li><strong>Customer Engagement &amp; Service:</strong>
+          <ul>
+            <li>Retain premium customers through exclusive benefits and loyalty programs.</li>
+            <li>Implement onboarding and retention strategies for New customers, and targeted re-engagement initiatives for Inactive users.</li>
+            <li>Address customer service challenges by streamlining response processes and enhancing overall user experience.</li>
+          </ul>
+        </li>
+        <li><strong>Delivery &amp; Operational Efficiency:</strong>
+          <ul>
+            <li>Identify and resolve operational bottlenecks causing minor delays using predictive analytics and route optimization.</li>
+            <li>Enhance real-time tracking to sustain high delivery standards.</li>
+          </ul>
+        </li>
+        <li><strong>Inventory &amp; Product Strategy:</strong>
+          <ul>
+            <li>Improve storage and packaging protocols for perishables to reduce damage rates.</li>
+            <li>Ensure a consistent supply of high-performing and high-margin products; consider bundling strategies for added profitability.</li>
+          </ul>
+        </li>
+        <li><strong>Marketing &amp; Pricing:</strong>
+          <ul>
+            <li>Monitor and adjust pricing strategies for lower-margin categories while leveraging high-margin segments.</li>
+            <li>Conduct A/B tests on ad creatives and remarketing campaigns to further improve conversion rates.</li>
+          </ul>
+        </li>
+      </ol>
+      <p>
+        Digital payments continue to rise while cash usage declines. These insights and recommendations underscore the need for a dynamic, data-driven strategy to drive future growth and operational excellence.
+      </p>
+    </section>
+  </div>
+  
+  <!-- Three.js Animation -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script>
+    let scene, camera, renderer, cube;
+    function init() {
+      const container = document.getElementById('threejs-container');
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
+      renderer = new THREE.WebGLRenderer({ antialias: true });
+      renderer.setSize(container.clientWidth, container.clientHeight);
+      container.appendChild(renderer.domElement);
+      
+      const geometry = new THREE.BoxGeometry();
+      const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+      cube = new THREE.Mesh(geometry, material);
+      scene.add(cube);
+      
+      camera.position.z = 3;
+    }
+    function animate() {
+      requestAnimationFrame(animate);
+      cube.rotation.x += 0.01;
+      cube.rotation.y += 0.01;
+      renderer.render(scene, camera);
+    }
+    window.addEventListener('resize', () => {
+      const container = document.getElementById('threejs-container');
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+    init();
+    animate();
+  </script>
+  <!-- AOS (Animate On Scroll) Initialization -->
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      duration: 800,
+      easing: 'ease-in-out',
+      once: true
+    });
+  </script>
+</body>
+</html>
