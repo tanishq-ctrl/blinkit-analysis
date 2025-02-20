@@ -3,7 +3,6 @@
 <div align="center">
 
 [![Website Status](https://img.shields.io/website?url=https%3A%2F%2Ftanishq-ctrl.github.io%2Fblinkit-analysis%2F&style=for-the-badge)](https://tanishq-ctrl.github.io/blinkit-analysis/)
-[![GitHub license](https://img.shields.io/github/license/tanishq-ctrl/blinkit-analysis?style=for-the-badge)](https://github.com/tanishq-ctrl/blinkit-analysis/blob/main/LICENSE)
 
 <h3>A comprehensive data storytelling dashboard analyzing Blinkit's performance metrics</h3>
 
